@@ -1,5 +1,6 @@
 from app.database import get_connection
 
+# 🔹 INSERT
 def guardar_temperatura(valor: float):
     conn = get_connection()
     cursor = conn.cursor()
@@ -16,6 +17,7 @@ def guardar_temperatura(valor: float):
     return {"mensaje": "Guardado en DB", "valor": valor}
 
 
+# 🔹 SELECT
 def obtener_datos():
     conn = get_connection()
     cursor = conn.cursor()
