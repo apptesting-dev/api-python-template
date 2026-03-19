@@ -1,22 +1,31 @@
-data = []
+from app.database import get_connection
 
 def guardar_temperatura(valor: float):
-    data.append(valor)
-    return {
-        "mensaje": "Dato guardado correctamente",
-        "valor": valor
-    }
+    conn = get_connection()
+    cursor = conn.cursor()
 
-def obtener_datos(min_temp: float = None, max_temp: float = None):
-    resultado = data
+    cursor.execute(
+        "INSERT INTO temperaturas (valor) VALUES (%s)",
+        (valor,)
+    )
 
-    if min_temp is not None:
-        resultado = [x for x in resultado if x >= min_temp]
+    conn.commit()
+    cursor.close()
+    conn.close()
 
-    if max_temp is not None:
-        resultado = [x for x in resultado if x <= max_temp]
+    return {"mensaje": "Guardado en DB", "valor": valor}
 
-    return {
-        "total": len(resultado),
-        "datos": resultado
-    }
+
+def obtener_datos():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id, valor FROM temperaturas")
+    rows = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    datos = [{"id": r[0], "valor": r[1]} for r in rows]
+
+    return {"datos": datos}
